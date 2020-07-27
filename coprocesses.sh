@@ -9,8 +9,6 @@ echo aaa >&"${COPROC[1]}" # standard input [1]
 exec {COPROC[1]}>&-
 cat <&"${COPROC[0]}" # standard output [0]
 
-echo -
-
 coproc name { tr [:lower:] [:upper:]; }
 echo "PID: $name_PID"
 echo aAa >&"${name[1]}"
