@@ -1,3 +1,1 @@
-# Learning Bash
-
-[Bash Notebook](./bash.ipynb)
+# [Bash Notebook](./bash.ipynb)
