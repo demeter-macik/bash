@@ -64,7 +64,7 @@ do
         echo "file already exists '$filePath/$fileName'"
     else
         echo "moving file '$file' to '$filePath'"
-        mv "$file" "$filePath"
+        mv "$file" "$filePath/$fileName"
     fi
     
 done
