@@ -1,9 +1,22 @@
 #!/bin/bash
 
+replace() (
+  chrs=( "ě" "š" "č" "ř" "ž" "ý" "á" "í" "ů" "ú" )
+  repl=( "e" "s" "c" "r" "z" "y" "a" "i" "u" "u" )
+  str=$1
+  for i in ${!chrs[@]}
+  do 
+    c=${chrs[$i]}
+    r=${repl[$i]}
+    str=$(echo $str | sed -r "s/$c/$r/g")
+  done
+  echo  "$str"
+)
+
 source=$1
 target=$2
 
-# echo "source $source, target $target"
+echo "source $source, target $target"
 
 if [ ! -d $source ]
 then
@@ -16,15 +29,7 @@ then
     mkdir $target
 fi
 
-files=($source/*)
-
-if [[ $files[1] =~ "source/*" ]]
-then
-    echo "Files not found in '$source'"
-    exit 1
-fi
-
-declare -A dates
+files=($source/*.rsc)
 
 for file in "${files[@]}"
 do
@@ -34,21 +39,15 @@ do
     if [[ ${#date} -eq 0 ]]
     then
         echo "can't parse '$file'"
-        exit 1
+        continue
     fi
     
     re="^[a-z]{3,}-[0-9]{2,}-[0-9]{4,}"
     [[ $date =~ $re ]] && date=$BASH_REMATCH
-    re="^[a-z]{3,}"
-    [[ $date =~ $re ]] && month=$BASH_REMATCH
-    re="[0-9]{2,}-[0-9]{4,}$"
-    [[ $date =~ $re ]] && date=$BASH_REMATCH
-    re="^[0-9]{2,}"
-    [[ $date =~ $re ]] && day=$BASH_REMATCH
-    re="[0-9]{4,}$"
-    [[ $date =~ $re ]] && year=$BASH_REMATCH
-    
-    filePath="$target/$year/$month/$day"
+
+    IFS='-'
+    read -r month day year <<< "$date"
+
     if [ ! -d $filePath ]
     then
         echo "create directory '$filePath'"
@@ -56,6 +55,7 @@ do
     fi
     
     fileName=$(basename "$file")
+    fileName=$(replace "$fileName")
     
     if [ -f "$filePath/$fileName" ]
     then
