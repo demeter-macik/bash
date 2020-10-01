@@ -48,6 +48,8 @@ do
     IFS='-'
     read -r month day year <<< "$date"
 
+    filePath="$target/$year/$month/$day"
+
     if [ ! -d $filePath ]
     then
         echo "create directory '$filePath'"
